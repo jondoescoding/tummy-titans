@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import NavBar from '@/components/NavBar';
 import DoctorCodeInput from '@/components/DoctorCodeInput';
-import { isValidDoctorCode } from '@/lib/patientData';
+import { isValidDoctorCode, addPatient } from '@/lib/patientData';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -106,7 +106,19 @@ const PatientForm = () => {
   };
 
   const onSubmit = (data: FormValues) => {
-    // In a real app, we would send this data to a backend
+    // Add the new patient to the mock patients data
+    addPatient({
+      name: data.name,
+      age: parseInt(data.age, 10),
+      height: parseInt(data.height, 10),
+      weight: parseInt(data.weight, 10),
+      condition: data.condition,
+      triggers: data.triggers || [],
+      medication: data.medication || [],
+      notes: data.notes || '',
+      doctorCode: data.doctorCode,
+    });
+    
     console.log('Form submitted:', data);
     
     toast.success('Your information has been submitted to the dietitian', {

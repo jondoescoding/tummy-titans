@@ -1,16 +1,17 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import NavBar from '@/components/NavBar';
 import PatientCard from '@/components/PatientCard';
-import { getPatientsByDoctorCode, Patient } from '@/lib/patientData';
+import { getPatientsByDoctorCode, Patient, mockPatients } from '@/lib/patientData';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { 
   Users, 
   SearchIcon,
-  ClipboardCheck
+  ClipboardCheck,
+  RefreshCw
 } from 'lucide-react';
 
 const DietitianDashboard = () => {
@@ -19,6 +20,19 @@ const DietitianDashboard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // This effect will run whenever mockPatients changes (when a new patient is added)
+  useEffect(() => {
+    if (isLoggedIn && doctorCode) {
+      refreshPatients();
+    }
+  }, [mockPatients, isLoggedIn, doctorCode]);
+
+  const refreshPatients = () => {
+    // Get fresh data from mockPatients
+    const fetchedPatients = getPatientsByDoctorCode(doctorCode);
+    setPatients(fetchedPatients);
+  };
 
   const handleCodeSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +62,7 @@ const DietitianDashboard = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-b from-white to-blue-50/50 backdrop-blur-md">
       <NavBar />
       
       <main className="container max-w-5xl mx-auto pt-32 pb-20 px-6 page-transition">
@@ -57,10 +71,10 @@ const DietitianDashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="max-w-md mx-auto glass-card rounded-2xl p-8 shadow-xl"
+            className="max-w-md mx-auto bg-white/50 backdrop-blur-lg rounded-2xl p-8 shadow-xl border border-white/20"
           >
             <div className="flex justify-center mb-6">
-              <div className="h-16 w-16 bg-blue-100 rounded-full flex items-center justify-center">
+              <div className="h-16 w-16 bg-blue-100/80 backdrop-blur-sm rounded-full flex items-center justify-center">
                 <Users className="h-8 w-8 text-primary" />
               </div>
             </div>
@@ -92,7 +106,7 @@ const DietitianDashboard = () => {
               
               <Button 
                 type="submit" 
-                className="w-full py-6"
+                className="w-full py-6 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
                 disabled={isLoading}
               >
                 {isLoading ? 'Logging in...' : 'Access Dashboard'}
@@ -117,14 +131,24 @@ const DietitianDashboard = () => {
                 </p>
               </div>
               
-              <div className="relative w-full md:w-auto min-w-[250px]">
-                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Search patients..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 form-input-transition"
-                />
+              <div className="flex items-center gap-3 w-full md:w-auto">
+                <div className="relative w-full md:w-auto min-w-[250px]">
+                  <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    placeholder="Search patients..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-9 form-input-transition"
+                  />
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="icon"
+                  onClick={refreshPatients}
+                  className="flex-shrink-0"
+                >
+                  <RefreshCw className="h-4 w-4" />
+                </Button>
               </div>
             </div>
             
@@ -135,7 +159,7 @@ const DietitianDashboard = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12">
+              <div className="text-center py-12 bg-white/50 backdrop-blur-sm rounded-xl border border-blue-100/30 shadow-md">
                 <div className="flex justify-center mb-4">
                   <ClipboardCheck className="h-12 w-12 text-gray-400" />
                 </div>

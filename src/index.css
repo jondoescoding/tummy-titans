@@ -119,3 +119,21 @@
   transform: translateY(-5px);
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
 }
+
+.mask-image-gradient {
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0));
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0));
+}
+
+/* Modern glassmorphism styles */
+.glass-morphism {
+  @apply bg-white/50 backdrop-blur-md border border-white/20 shadow-lg;
+}
+
+.btn-gradient {
+  @apply bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all duration-300;
+}
+
+.card-gradient {
+  @apply bg-gradient-to-br from-white/80 to-blue-50/80 backdrop-blur-md border border-white/30 shadow-lg;
+}

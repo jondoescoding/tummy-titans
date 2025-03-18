@@ -77,6 +77,75 @@ export const mockPatients: Patient[] = [
   }
 ];
 
+// Function to generate meal plans based on conditions and triggers
+function generateMealPlan(condition: string, triggers: string[]): string {
+  const avoidList = triggers.join(', ');
+  
+  let mealPlan = "**3-Day Meal Plan** (avoiding: " + avoidList + ")\n\n";
+  
+  // Common foods to avoid based on condition
+  const commonTriggers = new Set(triggers.map(t => t.toLowerCase()));
+  
+  // Build meal options based on condition and avoiding triggers
+  const breakfastOptions = [
+    "Oatmeal with berries and honey",
+    "Scrambled eggs with spinach",
+    "Greek yogurt with sliced banana",
+    "Quinoa breakfast bowl with fruits",
+    "Gluten-free toast with avocado"
+  ].filter(meal => !containsTriggers(meal, commonTriggers));
+  
+  const lunchOptions = [
+    "Grilled chicken salad with olive oil dressing",
+    "Baked salmon with steamed vegetables",
+    "Quinoa bowl with roasted vegetables",
+    "Turkey and vegetable soup",
+    "Brown rice bowl with steamed vegetables"
+  ].filter(meal => !containsTriggers(meal, commonTriggers));
+  
+  const dinnerOptions = [
+    "Baked white fish with steamed carrots and zucchini",
+    "Lean turkey with sweet potatoes",
+    "Grilled chicken with rice and steamed broccoli",
+    "Tofu stir-fry with bell peppers",
+    "Baked chicken with roasted root vegetables"
+  ].filter(meal => !containsTriggers(meal, commonTriggers));
+  
+  const snackOptions = [
+    "Apple slices",
+    "Carrot sticks",
+    "Rice cakes",
+    "Plain crackers",
+    "Banana"
+  ].filter(meal => !containsTriggers(meal, commonTriggers));
+  
+  // Generate 3-day meal plan
+  for (let day = 1; day <= 3; day++) {
+    mealPlan += `**Day ${day}:**\n`;
+    mealPlan += `- Breakfast: ${getRandomItem(breakfastOptions)}\n`;
+    mealPlan += `- Lunch: ${getRandomItem(lunchOptions)}\n`;
+    mealPlan += `- Dinner: ${getRandomItem(dinnerOptions)}\n`;
+    mealPlan += `- Snack: ${getRandomItem(snackOptions)}\n\n`;
+  }
+  
+  return mealPlan;
+}
+
+// Helper function to check if a meal contains any trigger words
+function containsTriggers(meal: string, triggers: Set<string>): boolean {
+  const lowerMeal = meal.toLowerCase();
+  for (const trigger of triggers) {
+    if (lowerMeal.includes(trigger)) return true;
+  }
+  return false;
+}
+
+// Helper function to get a random item from an array
+function getRandomItem<T>(arr: T[]): T {
+  if (arr.length === 0) return "Consult with dietitian for personalized options" as unknown as T;
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
 // Generate AI suggestion based on patient data
 export function generateAISuggestion(patient: Patient): string {
   const { condition, triggers, medication, age, weight, height } = patient;
@@ -122,6 +191,9 @@ export function generateAISuggestion(patient: Patient): string {
     suggestion += ' Consider age-related factors in treatment plan, including medication interactions and reduced digestive enzyme production.';
   }
   
+  // Add the meal plan
+  suggestion += '\n\n' + generateMealPlan(condition, triggers);
+  
   return suggestion;
 }
 
@@ -139,4 +211,15 @@ export function getDoctorNameByCode(code: string): string | undefined {
 // Helper function to get patients by doctor code
 export function getPatientsByDoctorCode(code: string): Patient[] {
   return mockPatients.filter(patient => patient.doctorCode === code);
+}
+
+// Add a new patient to the mock data
+export function addPatient(patient: Omit<Patient, 'id' | 'submittedAt'>): void {
+  const newPatient: Patient = {
+    ...patient,
+    id: `p${mockPatients.length + 1}`,
+    submittedAt: new Date()
+  };
+  
+  mockPatients.push(newPatient);
 }

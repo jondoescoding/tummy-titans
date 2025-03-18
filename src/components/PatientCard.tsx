@@ -4,7 +4,7 @@ import { Patient } from '@/lib/patientData';
 import { PillIcon, ClockIcon, HeartPulseIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
-import { generateAISuggestion } from '@/lib/patientData';
+import AISuggestion from './AISuggestion';
 
 interface PatientCardProps {
   patient: Patient;
@@ -30,8 +30,8 @@ const PatientCard = ({ patient }: PatientCardProps) => {
     >
       <div 
         className={cn(
-          "glass-card rounded-2xl overflow-hidden transition-all duration-300",
-          expanded ? "shadow-lg" : "shadow-md"
+          "bg-white/80 backdrop-blur-md rounded-2xl overflow-hidden transition-all duration-300 border border-blue-100/50",
+          expanded ? "shadow-xl" : "shadow-md"
         )}
       >
         <div 
@@ -92,12 +92,9 @@ const PatientCard = ({ patient }: PatientCardProps) => {
           >
             <div className="pt-4 border-t border-gray-100">
               <h4 className="text-sm font-semibold mb-2">Patient Notes</h4>
-              <p className="text-sm text-gray-600 mb-4">{patient.notes}</p>
+              <p className="text-sm text-gray-600 mb-6">{patient.notes}</p>
               
-              <h4 className="text-sm font-semibold mb-2">AI Suggestion</h4>
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <p className="text-sm text-blue-800">{generateAISuggestion(patient)}</p>
-              </div>
+              <AISuggestion patient={patient} />
             </div>
           </motion.div>
         )}
