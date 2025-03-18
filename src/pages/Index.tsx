@@ -8,7 +8,7 @@ import {
   UserIcon, 
   BrainCircuitIcon, 
   ArrowRightIcon,
-  Flask,
+  Beaker,
   SaladIcon 
 } from 'lucide-react';
 
@@ -33,7 +33,7 @@ const Index = () => {
             >
               <div className="flex items-center mb-6 gap-2">
                 <div className="bg-blue-100/80 backdrop-blur-sm p-1.5 rounded-md">
-                  <Flask className="h-5 w-5 text-blue-600" />
+                  <Beaker className="h-5 w-5 text-blue-600" />
                 </div>
                 <span className="inline-block px-3 py-1 rounded-full bg-blue-100/80 backdrop-blur-sm text-blue-700 text-sm font-medium">
                   Digestive Health Platform
